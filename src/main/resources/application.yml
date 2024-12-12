@@ -1,0 +1,16 @@
+spring:
+  application:
+    name: task-list
+  datasource:
+    url: jdbc:postgresql://localhost:5432/TaskListDB
+    driver-class-name: org.postgresql.Driver
+    username: postgres
+    password: 171101
+  jpa:
+    database-platform: org.hibernate.dialect.PostgreSQLDialect
+    hibernate:
+      ddl-auto: none
+  liquibase:
+    enabled: true
+    change-log: classpath:/liquibase/db.changelog-master.xml
+jwt-secret: TaskListSecret
