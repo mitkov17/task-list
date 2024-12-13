@@ -12,4 +12,6 @@ class AppUserDetails(private val user: User) : UserDetails {
     override fun getPassword(): String = user.password
 
     override fun getUsername(): String = user.username
+
+    fun getUser(): User = user
 }

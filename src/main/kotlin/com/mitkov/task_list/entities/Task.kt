@@ -10,7 +10,7 @@ data class Task(
         @Id
         @Column(name = "id")
         @GeneratedValue(strategy = GenerationType.IDENTITY)
-        var id: Long,
+        var id: Long?,
 
         @Column(name = "title")
         var title: String,
@@ -32,5 +32,5 @@ data class Task(
 
         @ManyToOne
         @JoinColumn(name = "user_id", referencedColumnName = "id")
-        var user: User
+        var user: User?
 )
