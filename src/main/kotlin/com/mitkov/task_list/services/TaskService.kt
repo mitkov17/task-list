@@ -32,9 +32,29 @@ class TaskService(
     }
 
     @Transactional
-    fun updateTask(task: Task): Task {
+    fun updateTaskForUser(taskId: Long, user: User, taskDTO: TaskDTO): Task {
+        val task = taskRepository.findById(taskId).orElseThrow {
+            RuntimeException("Task not found")
+        }
+
+        if (task.user != user) {
+            throw RuntimeException("You can't update tasks that don't belong to you")
+        }
+
+        task.title = taskDTO.title
+        task.description = taskDTO.description
+        task.deadline = taskDTO.deadline
+        task.priority = taskDTO.priority
+        task.status = taskDTO.status
+
         return taskRepository.save(task)
     }
+
+
+//    @Transactional
+//    fun updateTask(task: Task): Task {
+//        return taskRepository.save(task)
+//    }
 
     @Transactional
     fun deleteTaskById(taskId: Long, user: User) {

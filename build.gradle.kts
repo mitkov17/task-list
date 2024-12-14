@@ -29,7 +29,6 @@ dependencies {
 	implementation("org.jetbrains.kotlin:kotlin-reflect")
 	implementation("org.liquibase:liquibase-core:4.24.0")
 	implementation("com.auth0:java-jwt:4.4.0")
-	implementation("org.modelmapper:modelmapper:3.2.1")
 	runtimeOnly("org.postgresql:postgresql")
 	testImplementation("org.springframework.boot:spring-boot-starter-test")
 	testImplementation("org.jetbrains.kotlin:kotlin-test-junit5")

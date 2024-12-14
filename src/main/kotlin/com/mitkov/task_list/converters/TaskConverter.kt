@@ -2,7 +2,6 @@ package com.mitkov.task_list.converters
 
 import com.mitkov.task_list.dto.TaskDTO
 import com.mitkov.task_list.entities.Task
-import org.modelmapper.ModelMapper
 import org.springframework.stereotype.Component
 
 @Component

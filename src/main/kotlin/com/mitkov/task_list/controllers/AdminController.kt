@@ -25,68 +25,68 @@ import org.springframework.web.bind.annotation.RestController
 @RestController
 @RequestMapping("/admin")
 class AdminController (
-    private val userService: UserService,
-    private val taskService: TaskService,
-    private val taskConverter: TaskConverter,
-    private val statisticsService: StatisticsService
+//    private val userService: UserService,
+//    private val taskService: TaskService,
+//    private val taskConverter: TaskConverter,
+//    private val statisticsService: StatisticsService
 ) {
 
-    @GetMapping("/users")
-    fun getAllUsers(): ResponseEntity<List<User>> {
-        val users = userService.getAllUsers()
-        return ResponseEntity.ok(users)
-    }
-
-    @DeleteMapping("/users/{userId}")
-    fun deleteUser(@PathVariable userId: Long): ResponseEntity<Void> {
-        userService.deleteUserById(userId)
-        return ResponseEntity.ok().build()
-    }
-
-    @PatchMapping("/users/{userId}/role")
-    fun updateUserRole(
-        @PathVariable userId: Long,
-        @RequestParam role: Role
-    ): ResponseEntity<String> {
-        userService.updateUserRole(userId, role)
-        return ResponseEntity.ok("User role update to role $role")
-    }
-
-    @GetMapping("/tasks")
-    fun getAllTasks(): ResponseEntity<List<TaskDTO>> {
-        val tasks = taskService.getAllTasks()
-        val taskDTOList = tasks.map {taskConverter.convertToDTO(it)}
-        return ResponseEntity.ok(taskDTOList)
-    }
-
-    @PatchMapping("/tasks/{taskId}")
-    fun updateTaskAsAdmin(
-        @PathVariable taskId: Long,
-        @RequestBody @Valid taskDTO: TaskDTO
-    ): ResponseEntity<TaskDTO> {
-        val updatedTask = taskService.updateTaskAsAdmin(taskId, taskDTO)
-        return ResponseEntity.ok(taskConverter.convertToDTO(updatedTask))
-    }
-
-    @DeleteMapping("/tasks/{taskId}")
-    fun deleteTask(@PathVariable taskId: Long): ResponseEntity<Void> {
-        taskService.deleteTaskById(taskId)
-        return ResponseEntity.ok().build()
-    }
-
-    @GetMapping("/statistics")
-    fun getTaskStatistics(): ResponseEntity<Map<String, Any>> {
-        val stats = statisticsService.getTaskStatistics()
-        return ResponseEntity.ok(stats)
-    }
-
-    @GetMapping("/statistics/export")
-    fun exportStatisticsToCSV(response: HttpServletResponse) {
-        statisticsService.exportStatisticsToCSV(response)
-    }
-
-    @GetMapping("/statistics/export-sorted")
-    fun exportSortedTasks(response: HttpServletResponse) {
-        statisticsService.exportAllTasksSortedByDeadlineToCSV(response)
-    }
+//    @GetMapping("/users")
+//    fun getAllUsers(): ResponseEntity<List<User>> {
+//        val users = userService.getAllUsers()
+//        return ResponseEntity.ok(users)
+//    }
+//
+//    @DeleteMapping("/users/{userId}")
+//    fun deleteUser(@PathVariable userId: Long): ResponseEntity<Void> {
+//        userService.deleteUserById(userId)
+//        return ResponseEntity.ok().build()
+//    }
+//
+//    @PatchMapping("/users/{userId}/role")
+//    fun updateUserRole(
+//        @PathVariable userId: Long,
+//        @RequestParam role: Role
+//    ): ResponseEntity<String> {
+//        userService.updateUserRole(userId, role)
+//        return ResponseEntity.ok("User role update to role $role")
+//    }
+//
+//    @GetMapping("/tasks")
+//    fun getAllTasks(): ResponseEntity<List<TaskDTO>> {
+//        val tasks = taskService.getAllTasks()
+//        val taskDTOList = tasks.map {taskConverter.convertToDTO(it)}
+//        return ResponseEntity.ok(taskDTOList)
+//    }
+//
+//    @PatchMapping("/tasks/{taskId}")
+//    fun updateTaskAsAdmin(
+//        @PathVariable taskId: Long,
+//        @RequestBody @Valid taskDTO: TaskDTO
+//    ): ResponseEntity<TaskDTO> {
+//        val updatedTask = taskService.updateTaskAsAdmin(taskId, taskDTO)
+//        return ResponseEntity.ok(taskConverter.convertToDTO(updatedTask))
+//    }
+//
+//    @DeleteMapping("/tasks/{taskId}")
+//    fun deleteTask(@PathVariable taskId: Long): ResponseEntity<Void> {
+//        taskService.deleteTaskById(taskId)
+//        return ResponseEntity.ok().build()
+//    }
+//
+//    @GetMapping("/statistics")
+//    fun getTaskStatistics(): ResponseEntity<Map<String, Any>> {
+//        val stats = statisticsService.getTaskStatistics()
+//        return ResponseEntity.ok(stats)
+//    }
+//
+//    @GetMapping("/statistics/export")
+//    fun exportStatisticsToCSV(response: HttpServletResponse) {
+//        statisticsService.exportStatisticsToCSV(response)
+//    }
+//
+//    @GetMapping("/statistics/export-sorted")
+//    fun exportSortedTasks(response: HttpServletResponse) {
+//        statisticsService.exportAllTasksSortedByDeadlineToCSV(response)
+//    }
 }
