@@ -25,4 +25,39 @@ class UserService(
     fun findByUsername(username: String): User? {
         return userRepository.findByUsername(username)
     }
+
+    fun getAllUsers(): List<User> {
+        return userRepository.findAll()
+    }
+
+    @Transactional
+    fun deleteUserById(userId: Long) {
+        val user = userRepository.findById(userId).orElseThrow { RuntimeException("User not found!") }
+        userRepository.delete(user)
+    }
+
+    @Transactional
+    fun updateUserRole(userId: Long, role: Role) {
+        val user = userRepository.findById(userId).orElseThrow {RuntimeException("User not found!")}
+        user.role = role
+        userRepository.save(user)
+    }
+
+    fun createDefaultAdminIfNotExists() {
+        val existingAdmin = userRepository.findByUsername("admin")
+        if (existingAdmin == null) {
+            val admin = User(
+                username = "admin",
+                password = passwordEncoder.encode("admin"),
+                role = Role.ROLE_ADMIN
+            )
+            userRepository.save(admin)
+        }
+    }
+
+    fun getUserTasksStatistics(): Map<String, Long> {
+        return userRepository.findAll().associate { user ->
+            user.username to user.tasks.size.toLong()
+        }
+    }
 }

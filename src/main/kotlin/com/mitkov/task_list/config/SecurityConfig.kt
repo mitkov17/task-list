@@ -21,6 +21,7 @@ class SecurityConfig(private val jwtFilter: JWTFilter) {
             .authorizeHttpRequests {
                 it.requestMatchers("/auth/**", "/swagger-ui/**", "/v3/api-docs/**").permitAll()
                 it.requestMatchers("/tasks/**").hasAnyRole("USER", "ADMIN")
+                it.requestMatchers("/admin/**").hasAnyRole("ADMIN")
                     .anyRequest().authenticated()
             }
             .sessionManagement {it.sessionCreationPolicy(SessionCreationPolicy.STATELESS)}

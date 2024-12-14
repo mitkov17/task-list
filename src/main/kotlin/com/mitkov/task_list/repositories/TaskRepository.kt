@@ -10,4 +10,6 @@ import org.springframework.stereotype.Repository
 interface TaskRepository : JpaRepository<Task, Long> {
     fun findByUser(user: User): List<Task>
     fun findByUserAndStatus(user: User, status: Status): List<Task>
+    fun countByStatus(status: Status): Long
+    fun countByUserAndStatus(user: User, status: Status): Long
 }

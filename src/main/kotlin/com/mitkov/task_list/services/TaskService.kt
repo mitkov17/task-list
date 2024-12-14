@@ -1,5 +1,6 @@
 package com.mitkov.task_list.services
 
+import com.mitkov.task_list.dto.TaskDTO
 import com.mitkov.task_list.entities.Status
 import com.mitkov.task_list.entities.Task
 import com.mitkov.task_list.entities.User
@@ -52,5 +53,36 @@ class TaskService(
         }
         task.status = Status.DONE
         taskRepository.save(task)
+    }
+
+    fun getAllTasks(): List<Task> {
+        return taskRepository.findAll()
+    }
+
+    @Transactional
+    fun updateTaskAsAdmin(taskId: Long, taskDTO: TaskDTO): Task {
+        val task = taskRepository.findById(taskId).orElseThrow { RuntimeException("Task not found") }
+
+        task.title = taskDTO.title
+        task.description = taskDTO.description
+        task.deadline = taskDTO.deadline
+        task.priority = taskDTO.priority
+        task.status = taskDTO.status
+
+        return taskRepository.save(task)
+    }
+
+    @Transactional
+    fun deleteTaskById(taskId: Long) {
+        val task = taskRepository.findById(taskId).orElseThrow { RuntimeException("Task not found!") }
+        taskRepository.delete(task)
+    }
+
+    fun getTotalTasksCount(): Long {
+        return taskRepository.count()
+    }
+
+    fun getTasksByStatusCount(status: Status): Long {
+        return taskRepository.countByStatus(status)
     }
 }
