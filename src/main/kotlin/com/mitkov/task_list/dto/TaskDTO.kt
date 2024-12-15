@@ -2,18 +2,21 @@ package com.mitkov.task_list.dto
 
 import com.mitkov.task_list.entities.Priority
 import com.mitkov.task_list.entities.Status
-import jakarta.validation.constraints.NotBlank
-import jakarta.validation.constraints.Size
+import io.swagger.v3.oas.annotations.media.Schema
 import java.util.*
 
+@Schema(description = "DTO for task information")
 data class TaskDTO(
+    @Schema(description = "The unique ID of the task", example = "1")
     val id: Long?,
-    @NotBlank(message = "Title cannot be empty")
-    @Size(min = 3, max = 100, message = "Title length must be between 3 and 100 characters")
+    @Schema(description = "The title of the task", example = "Finish project documentation")
     val title: String,
-    @NotBlank(message = "Description cannot be empty")
+    @Schema(description = "A detailed description of the task", example = "Complete the Swagger documentation for the project")
     val description: String,
+    @Schema(description = "The deadline for the task in ISO 8601 format", example = "2024-12-31T23:59:59")
     val deadline: Date,
+    @Schema(description = "The priority level of the task", example = "HIGH")
     val priority: Priority,
+    @Schema(description = "The current status of the task", example = "UNFINISHED")
     val status: Status
 )

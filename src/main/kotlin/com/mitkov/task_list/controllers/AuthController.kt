@@ -6,6 +6,11 @@ import com.mitkov.task_list.dto.RegistrationDTO
 import com.mitkov.task_list.entities.User
 import com.mitkov.task_list.security.JWTUtil
 import com.mitkov.task_list.services.UserService
+import io.swagger.v3.oas.annotations.Operation
+import io.swagger.v3.oas.annotations.media.Content
+import io.swagger.v3.oas.annotations.media.Schema
+import io.swagger.v3.oas.annotations.responses.ApiResponse
+import io.swagger.v3.oas.annotations.responses.ApiResponses
 import jakarta.validation.Valid
 import org.springframework.http.HttpStatus
 import org.springframework.http.ResponseEntity
@@ -26,6 +31,25 @@ class AuthController(
     private val userConverter: UserConverter
 ) {
 
+    @Operation(
+        summary = "Register a new user",
+        description = "Registers a new user in the system.",
+        tags = ["Auth"]
+    )
+    @ApiResponses(
+        value = [
+            ApiResponse(
+                responseCode = "200",
+                description = "Registration successful",
+                content = [Content(mediaType = "application/json")]
+            ),
+            ApiResponse(
+                responseCode = "400",
+                description = "Invalid registration data",
+                content = [Content(mediaType = "application/json")]
+            )
+        ]
+    )
     @PostMapping("/registration")
     fun performRegistration(@RequestBody @Valid registrationDTO: RegistrationDTO): ResponseEntity<String> {
         val user: User = userConverter.convertFromRegistrationDTO(registrationDTO)
@@ -33,6 +57,25 @@ class AuthController(
         return ResponseEntity.ok("Registration successful")
     }
 
+    @Operation(
+        summary = "Authenticate a user",
+        description = "Authenticates a user and returns a JWT token.",
+        tags = ["Auth"]
+    )
+    @ApiResponses(
+        value = [
+            ApiResponse(
+                responseCode = "200",
+                description = "Authentication successful",
+                content = [Content(mediaType = "application/json", schema = Schema(example = "{'jwt-token': 'string'}"))]
+            ),
+            ApiResponse(
+                responseCode = "401",
+                description = "Invalid credentials",
+                content = [Content(mediaType = "application/json")]
+            )
+        ]
+    )
     @PostMapping("/login")
     fun performLogin(@RequestBody authenticationDTO: AuthenticationDTO): ResponseEntity<Map<String, String>> {
         val authInputToken = UsernamePasswordAuthenticationToken(authenticationDTO.username, authenticationDTO.password)

@@ -1,14 +1,14 @@
 package com.mitkov.task_list.dto
 
 import com.mitkov.task_list.entities.Role
-import jakarta.validation.constraints.NotBlank
-import jakarta.validation.constraints.Size
+import io.swagger.v3.oas.annotations.media.Schema
 
+@Schema(description = "DTO for user information")
 data class UserDTO(
+    @Schema(description = "The unique ID of the user", example = "1")
     val id: Long,
-    @NotBlank(message = "Username cannot be empty")
-    @Size(min = 3, max = 100, message = "Username length must be between 3 and 100 characters")
+    @Schema(description = "The username of the user", example = "john_doe")
     val username: String,
-
+    @Schema(description = "The role assigned to the user", example = "ROLE_USER")
     val role: Role,
 )

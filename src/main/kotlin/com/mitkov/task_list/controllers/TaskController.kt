@@ -6,6 +6,8 @@ import com.mitkov.task_list.entities.Status
 import com.mitkov.task_list.security.AppUserDetails
 import com.mitkov.task_list.services.TaskService
 import io.swagger.v3.oas.annotations.Operation
+import io.swagger.v3.oas.annotations.media.Content
+import io.swagger.v3.oas.annotations.media.Schema
 import io.swagger.v3.oas.annotations.responses.ApiResponse
 import io.swagger.v3.oas.annotations.responses.ApiResponses
 import jakarta.validation.Valid
@@ -21,12 +23,20 @@ class TaskController(
     private val taskConverter: TaskConverter
 ) {
 
-    @Operation(description = "Method that registers new sensors")
+    @Operation(
+        summary = "Create a new task",
+        description = "Allows a user or admin to create a new task associated with their account.",
+        tags = ["Tasks"]
+    )
     @ApiResponses(
-        value = [ApiResponse(
-            responseCode = "200",
-            description = "Success|OK"
-        ), ApiResponse(responseCode = "409", description = "Sensor already exists!")]
+        value = [
+            ApiResponse(
+                responseCode = "200",
+                description = "Task created successfully",
+                content = [Content(mediaType = "application/json", schema = Schema(implementation = TaskDTO::class))]
+            ),
+            ApiResponse(responseCode = "403", description = "Access denied")
+        ]
     )
     @PostMapping
     @PreAuthorize("hasAnyRole('USER', 'ADMIN')")
@@ -42,6 +52,24 @@ class TaskController(
         return ResponseEntity.ok(taskConverter.convertToDTO(createdTask))
     }
 
+    @Operation(
+        summary = "Retrieve tasks for a user",
+        description = "Retrieves all tasks associated with the authenticated user. Optionally filters by task status.",
+        tags = ["Tasks"]
+    )
+    @ApiResponses(
+        value = [
+            ApiResponse(
+                responseCode = "200",
+                description = "Tasks retrieved successfully",
+                content = [Content(
+                    mediaType = "application/json",
+                    schema = Schema(implementation = TaskDTO::class, type = "array")
+                )]
+            ),
+            ApiResponse(responseCode = "403", description = "Access denied")
+        ]
+    )
     @GetMapping
     @PreAuthorize("hasAnyRole('USER', 'ADMIN')")
     fun getTasksByUser(
@@ -58,6 +86,22 @@ class TaskController(
         return ResponseEntity.ok(taskDTOList)
     }
 
+    @Operation(
+        summary = "Update a task",
+        description = "Allows a user or admin to update an existing task.",
+        tags = ["Tasks"]
+    )
+    @ApiResponses(
+        value = [
+            ApiResponse(
+                responseCode = "200",
+                description = "Task updated successfully",
+                content = [Content(mediaType = "application/json", schema = Schema(implementation = TaskDTO::class))]
+            ),
+            ApiResponse(responseCode = "404", description = "Task not found"),
+            ApiResponse(responseCode = "403", description = "Access denied")
+        ]
+    )
     @PatchMapping("/{taskId}")
     @PreAuthorize("hasAnyRole('USER', 'ADMIN')")
     fun updateTask(
@@ -70,6 +114,18 @@ class TaskController(
         return ResponseEntity.ok(taskConverter.convertToDTO(updatedTask))
     }
 
+    @Operation(
+        summary = "Delete a task",
+        description = "Allows a user or admin to delete a task by ID.",
+        tags = ["Tasks"]
+    )
+    @ApiResponses(
+        value = [
+            ApiResponse(responseCode = "200", description = "Task deleted successfully"),
+            ApiResponse(responseCode = "404", description = "Task not found"),
+            ApiResponse(responseCode = "403", description = "Access denied")
+        ]
+    )
     @DeleteMapping("/{taskId}")
     @PreAuthorize("hasAnyRole('USER', 'ADMIN')")
     fun deleteTask(
@@ -81,6 +137,18 @@ class TaskController(
         return ResponseEntity.ok().build()
     }
 
+    @Operation(
+        summary = "Mark a task as completed",
+        description = "Marks an existing task as completed.",
+        tags = ["Tasks"]
+    )
+    @ApiResponses(
+        value = [
+            ApiResponse(responseCode = "200", description = "Task marked as completed"),
+            ApiResponse(responseCode = "404", description = "Task not found"),
+            ApiResponse(responseCode = "403", description = "Access denied")
+        ]
+    )
     @PatchMapping("/{taskId}/complete")
     @PreAuthorize("hasAnyRole('USER', 'ADMIN')")
     fun markTaskAsCompleted(
@@ -92,6 +160,24 @@ class TaskController(
         return ResponseEntity.ok("Task marked as completed")
     }
 
+    @Operation(
+        summary = "Retrieve all tasks",
+        description = "Retrieves all tasks in the system (admin only).",
+        tags = ["Tasks"]
+    )
+    @ApiResponses(
+        value = [
+            ApiResponse(
+                responseCode = "200",
+                description = "Tasks retrieved successfully",
+                content = [Content(
+                    mediaType = "application/json",
+                    schema = Schema(implementation = TaskDTO::class, type = "array")
+                )]
+            ),
+            ApiResponse(responseCode = "403", description = "Access denied")
+        ]
+    )
     @GetMapping("/all")
     @PreAuthorize("hasRole('ADMIN')")
     fun getAllTasks(): ResponseEntity<List<TaskDTO>> {
@@ -99,6 +185,22 @@ class TaskController(
         return ResponseEntity.ok(tasks.map { taskConverter.convertToDTO(it) })
     }
 
+    @Operation(
+        summary = "Update a task as admin",
+        description = "Allows an admin to update any task in the system.",
+        tags = ["Tasks"]
+    )
+    @ApiResponses(
+        value = [
+            ApiResponse(
+                responseCode = "200",
+                description = "Task updated successfully",
+                content = [Content(mediaType = "application/json", schema = Schema(implementation = TaskDTO::class))]
+            ),
+            ApiResponse(responseCode = "404", description = "Task not found"),
+            ApiResponse(responseCode = "403", description = "Access denied")
+        ]
+    )
     @PatchMapping("/{taskId}/admin")
     @PreAuthorize("hasRole('ADMIN')")
     fun updateTaskAsAdmin(
@@ -109,6 +211,18 @@ class TaskController(
         return ResponseEntity.ok(taskConverter.convertToDTO(updatedTask))
     }
 
+    @Operation(
+        summary = "Delete a task as admin",
+        description = "Allows an admin to delete any task in the system.",
+        tags = ["Tasks"]
+    )
+    @ApiResponses(
+        value = [
+            ApiResponse(responseCode = "200", description = "Task deleted successfully"),
+            ApiResponse(responseCode = "404", description = "Task not found"),
+            ApiResponse(responseCode = "403", description = "Access denied")
+        ]
+    )
     @DeleteMapping("/{taskId}/admin")
     @PreAuthorize("hasRole('ADMIN')")
     fun deleteTask(@PathVariable taskId: Long): ResponseEntity<Void> {
