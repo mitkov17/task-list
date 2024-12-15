@@ -11,7 +11,6 @@ import io.swagger.v3.oas.annotations.media.Content
 import io.swagger.v3.oas.annotations.media.Schema
 import io.swagger.v3.oas.annotations.responses.ApiResponse
 import io.swagger.v3.oas.annotations.responses.ApiResponses
-import jakarta.validation.Valid
 import org.springframework.http.HttpStatus
 import org.springframework.http.ResponseEntity
 import org.springframework.security.authentication.AuthenticationManager
@@ -51,7 +50,7 @@ class AuthController(
         ]
     )
     @PostMapping("/registration")
-    fun performRegistration(@RequestBody @Valid registrationDTO: RegistrationDTO): ResponseEntity<String> {
+    fun performRegistration(@RequestBody registrationDTO: RegistrationDTO): ResponseEntity<String> {
         val user: User = userConverter.convertFromRegistrationDTO(registrationDTO)
         userService.register(user)
         return ResponseEntity.ok("Registration successful")
@@ -67,7 +66,10 @@ class AuthController(
             ApiResponse(
                 responseCode = "200",
                 description = "Authentication successful",
-                content = [Content(mediaType = "application/json", schema = Schema(example = "{'jwt-token': 'string'}"))]
+                content = [Content(
+                    mediaType = "application/json",
+                    schema = Schema(example = "{'jwt-token': 'string'}")
+                )]
             ),
             ApiResponse(
                 responseCode = "401",

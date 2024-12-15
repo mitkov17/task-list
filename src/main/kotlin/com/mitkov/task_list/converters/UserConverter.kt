@@ -17,15 +17,6 @@ class UserConverter {
         )
     }
 
-    fun convertFromDTO(userDTO: UserDTO): User {
-        return User(
-            id = userDTO.id,
-            username = userDTO.username,
-            password = "",
-            role = userDTO.role,
-        )
-    }
-
     fun convertFromRegistrationDTO(registrationDTO: RegistrationDTO): User {
         return User(
             username = registrationDTO.username,

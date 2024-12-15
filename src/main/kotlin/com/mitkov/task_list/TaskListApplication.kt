@@ -7,5 +7,5 @@ import org.springframework.boot.runApplication
 class TaskListApplication
 
 fun main(args: Array<String>) {
-	runApplication<TaskListApplication>(*args)
+    runApplication<TaskListApplication>(*args)
 }

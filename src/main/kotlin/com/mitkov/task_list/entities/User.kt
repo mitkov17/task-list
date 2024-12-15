@@ -7,32 +7,32 @@ import org.hibernate.annotations.Cascade
 @Table(name = "users")
 data class User(
 
-        @Id
-        @Column(name = "id")
-        @GeneratedValue(strategy = GenerationType.IDENTITY)
-        var id: Long = 0L,
+    @Id
+    @Column(name = "id")
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    var id: Long = 0L,
 
-        @Column(name = "username")
-        var username: String,
+    @Column(name = "username")
+    var username: String,
 
-        @Column(name = "password")
-        var password: String,
+    @Column(name = "password")
+    var password: String,
 
-        @Column(name = "role")
-        @Enumerated(EnumType.STRING)
-        var role: Role,
+    @Column(name = "role")
+    @Enumerated(EnumType.STRING)
+    var role: Role,
 
-        @OneToMany(mappedBy = "user")
-        @Cascade(org.hibernate.annotations.CascadeType.DELETE_ORPHAN)
-        val tasks: MutableList<Task> = mutableListOf()
+    @OneToMany(mappedBy = "user")
+    @Cascade(org.hibernate.annotations.CascadeType.DELETE_ORPHAN)
+    val tasks: MutableList<Task> = mutableListOf()
 ) {
-        override fun equals(other: Any?): Boolean {
-                if (this === other) return true
-                if (other == null || this::class != other::class) return false
+    override fun equals(other: Any?): Boolean {
+        if (this === other) return true
+        if (other == null || this::class != other::class) return false
 
-                other as User
-                return id == other.id
-        }
+        other as User
+        return id == other.id
+    }
 
-        override fun hashCode(): Int = id.hashCode()
+    override fun hashCode(): Int = id.hashCode()
 }

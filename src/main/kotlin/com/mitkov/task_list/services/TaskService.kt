@@ -60,7 +60,8 @@ class TaskService(
 
     @Transactional
     fun markTaskAsCompleted(taskId: Long, user: User) {
-        val task = taskRepository.findById(taskId).orElseThrow { TaskNotFoundException("Task with ID $taskId not found") }
+        val task =
+            taskRepository.findById(taskId).orElseThrow { TaskNotFoundException("Task with ID $taskId not found") }
         if (task.user != user) {
             throw UnauthorizedActionException("You can't delete tasks that don't belong to you")
         }
@@ -77,7 +78,8 @@ class TaskService(
 
     @Transactional
     fun updateTaskAsAdmin(taskId: Long, taskDTO: TaskDTO): Task {
-        val task = taskRepository.findById(taskId).orElseThrow { TaskNotFoundException("Task with ID $taskId not found") }
+        val task =
+            taskRepository.findById(taskId).orElseThrow { TaskNotFoundException("Task with ID $taskId not found") }
 
         task.title = taskDTO.title
         task.description = taskDTO.description
@@ -90,7 +92,8 @@ class TaskService(
 
     @Transactional
     fun deleteTaskById(taskId: Long) {
-        val task = taskRepository.findById(taskId).orElseThrow { TaskNotFoundException("Task with ID $taskId not found") }
+        val task =
+            taskRepository.findById(taskId).orElseThrow { TaskNotFoundException("Task with ID $taskId not found") }
         taskRepository.delete(task)
     }
 

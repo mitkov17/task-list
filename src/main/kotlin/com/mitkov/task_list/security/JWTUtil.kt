@@ -10,7 +10,7 @@ import java.time.ZonedDateTime
 import java.util.*
 
 @Component
-class JWTUtil (
+class JWTUtil(
     @Value("{jwt-secret}") private val secret: String
 ) {
     fun generateToken(username: String, role: Role): String {
@@ -26,7 +26,7 @@ class JWTUtil (
             .sign(Algorithm.HMAC256(secret))
     }
 
-    fun validateTokenAndRetrieveClaims(token: String) : Pair<String, String> {
+    fun validateTokenAndRetrieveClaims(token: String): Pair<String, String> {
         val verifier: JWTVerifier = JWT.require(Algorithm.HMAC256(secret))
             .withSubject("User details")
             .withIssuer("TaskListApp")

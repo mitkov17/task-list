@@ -13,8 +13,10 @@ import org.springframework.stereotype.Component
 import org.springframework.web.filter.OncePerRequestFilter
 
 @Component
-class JWTFilter(private val jwtUtil: JWTUtil,
-                private val userDetailsService: AppUserDetailsService) : OncePerRequestFilter() {
+class JWTFilter(
+    private val jwtUtil: JWTUtil,
+    private val userDetailsService: AppUserDetailsService
+) : OncePerRequestFilter() {
     override fun doFilterInternal(
         request: HttpServletRequest,
         response: HttpServletResponse,
@@ -26,9 +28,10 @@ class JWTFilter(private val jwtUtil: JWTUtil,
             try {
                 val (username, role) = jwtUtil.validateTokenAndRetrieveClaims(jwt)
                 val userDetails: UserDetails = userDetailsService.loadUserByUsername(username)
-                val authToken = UsernamePasswordAuthenticationToken(userDetails, null, listOf(SimpleGrantedAuthority(role)))
+                val authToken =
+                    UsernamePasswordAuthenticationToken(userDetails, null, listOf(SimpleGrantedAuthority(role)))
                 SecurityContextHolder.getContext().authentication = authToken
-            } catch(e: Exception) {
+            } catch (e: Exception) {
                 response.sendError(HttpServletResponse.SC_BAD_REQUEST, "Invalid JWT Token")
                 return
             }

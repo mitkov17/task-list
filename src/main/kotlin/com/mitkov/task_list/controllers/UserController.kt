@@ -30,7 +30,10 @@ class UserController(
             ApiResponse(
                 responseCode = "200",
                 description = "List of users retrieved successfully",
-                content = [Content(mediaType = "application/json", schema = Schema(implementation = UserDTO::class, type = "array"))]
+                content = [Content(
+                    mediaType = "application/json",
+                    schema = Schema(implementation = UserDTO::class, type = "array")
+                )]
             ),
             ApiResponse(responseCode = "403", description = "Access denied")
         ]

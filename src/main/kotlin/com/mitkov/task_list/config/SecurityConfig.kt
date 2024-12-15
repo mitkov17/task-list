@@ -2,7 +2,6 @@ package com.mitkov.task_list.config
 
 import org.springframework.context.annotation.Bean
 import org.springframework.context.annotation.Configuration
-import org.springframework.http.HttpMethod
 import org.springframework.security.authentication.AuthenticationManager
 import org.springframework.security.config.annotation.authentication.configuration.AuthenticationConfiguration
 import org.springframework.security.config.annotation.web.builders.HttpSecurity
@@ -17,7 +16,7 @@ class SecurityConfig(private val jwtFilter: JWTFilter) {
 
     @Bean
     fun securityFilterChain(http: HttpSecurity): SecurityFilterChain {
-        http.csrf {it.disable()}
+        http.csrf { it.disable() }
             .authorizeHttpRequests {
                 it.requestMatchers("/v3/api-docs/**", "/swagger-ui/**", "/swagger-ui.html").permitAll()
                 it.requestMatchers("/auth/**").permitAll()
@@ -26,7 +25,7 @@ class SecurityConfig(private val jwtFilter: JWTFilter) {
                 it.requestMatchers("/statistics/**").hasRole("ADMIN")
                 it.anyRequest().authenticated()
             }
-            .sessionManagement {it.sessionCreationPolicy(SessionCreationPolicy.STATELESS)}
+            .sessionManagement { it.sessionCreationPolicy(SessionCreationPolicy.STATELESS) }
             .addFilterBefore(jwtFilter, UsernamePasswordAuthenticationFilter::class.java)
 
         return http.build()

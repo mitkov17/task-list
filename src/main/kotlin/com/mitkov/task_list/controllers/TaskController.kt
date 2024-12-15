@@ -10,7 +10,6 @@ import io.swagger.v3.oas.annotations.media.Content
 import io.swagger.v3.oas.annotations.media.Schema
 import io.swagger.v3.oas.annotations.responses.ApiResponse
 import io.swagger.v3.oas.annotations.responses.ApiResponses
-import jakarta.validation.Valid
 import org.springframework.http.ResponseEntity
 import org.springframework.security.access.prepost.PreAuthorize
 import org.springframework.security.core.annotation.AuthenticationPrincipal
@@ -42,7 +41,7 @@ class TaskController(
     @PreAuthorize("hasAnyRole('USER', 'ADMIN')")
     fun createTask(
         @AuthenticationPrincipal appUserDetails: AppUserDetails,
-        @RequestBody @Valid taskDTO: TaskDTO
+        @RequestBody taskDTO: TaskDTO
     ): ResponseEntity<TaskDTO> {
         val user = appUserDetails.getUser()
         val task = taskConverter.convertFromDTO(taskDTO)
@@ -107,7 +106,7 @@ class TaskController(
     fun updateTask(
         @AuthenticationPrincipal appUserDetails: AppUserDetails,
         @PathVariable taskId: Long,
-        @RequestBody @Valid taskDTO: TaskDTO
+        @RequestBody taskDTO: TaskDTO
     ): ResponseEntity<TaskDTO> {
         val user = appUserDetails.getUser()
         val updatedTask = taskService.updateTaskForUser(taskId, user, taskDTO)
@@ -205,7 +204,7 @@ class TaskController(
     @PreAuthorize("hasRole('ADMIN')")
     fun updateTaskAsAdmin(
         @PathVariable taskId: Long,
-        @RequestBody @Valid taskDTO: TaskDTO
+        @RequestBody taskDTO: TaskDTO
     ): ResponseEntity<TaskDTO> {
         val updatedTask = taskService.updateTaskAsAdmin(taskId, taskDTO)
         return ResponseEntity.ok(taskConverter.convertToDTO(updatedTask))
