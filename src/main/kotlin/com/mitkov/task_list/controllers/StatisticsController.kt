@@ -27,7 +27,7 @@ class StatisticsController(
         statisticsService.exportStatisticsToCSV(response)
     }
 
-    @GetMapping("/tasks/export")
+    @GetMapping("/export-sorted")
     @PreAuthorize("hasRole('ADMIN')")
     fun exportSortedTasks(response: HttpServletResponse) {
         statisticsService.exportAllTasksSortedByDeadlineToCSV(response)

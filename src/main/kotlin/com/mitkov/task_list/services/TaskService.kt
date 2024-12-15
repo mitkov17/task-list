@@ -4,6 +4,9 @@ import com.mitkov.task_list.dto.TaskDTO
 import com.mitkov.task_list.entities.Status
 import com.mitkov.task_list.entities.Task
 import com.mitkov.task_list.entities.User
+import com.mitkov.task_list.exceptions.TaskIsAlreadyCompletedException
+import com.mitkov.task_list.exceptions.TaskNotFoundException
+import com.mitkov.task_list.exceptions.UnauthorizedActionException
 import com.mitkov.task_list.repositories.TaskRepository
 import jakarta.transaction.Transactional
 import org.springframework.stereotype.Service
@@ -22,23 +25,18 @@ class TaskService(
         return taskRepository.findByUser(user)
     }
 
-    fun getTasksByStatusAndUser(user: User, status: String): List<Task> {
-        val taskStatus = try {
-            Status.valueOf(status.uppercase())
-        } catch (e: IllegalArgumentException) {
-            throw RuntimeException("Invalid Status: $status")
-        }
-        return taskRepository.findByUserAndStatus(user, taskStatus)
+    fun getTasksByStatusAndUser(user: User, status: Status): List<Task> {
+        return taskRepository.findByUserAndStatus(user, status)
     }
 
     @Transactional
     fun updateTaskForUser(taskId: Long, user: User, taskDTO: TaskDTO): Task {
         val task = taskRepository.findById(taskId).orElseThrow {
-            RuntimeException("Task not found")
+            TaskNotFoundException("Task with ID $taskId not found")
         }
 
         if (task.user != user) {
-            throw RuntimeException("You can't update tasks that don't belong to you")
+            throw UnauthorizedActionException("You can't update tasks that don't belong to you")
         }
 
         task.title = taskDTO.title
@@ -50,28 +48,26 @@ class TaskService(
         return taskRepository.save(task)
     }
 
-
-//    @Transactional
-//    fun updateTask(task: Task): Task {
-//        return taskRepository.save(task)
-//    }
-
     @Transactional
     fun deleteTaskById(taskId: Long, user: User) {
-        val task = taskRepository.findById(taskId).orElseThrow { RuntimeException("Task not found!") }
+        val task =
+            taskRepository.findById(taskId).orElseThrow { TaskNotFoundException("Task with ID $taskId not found") }
         if (task.user != user) {
-            throw RuntimeException("You can't delete tasks that don't belong to you")
+            throw UnauthorizedActionException("You can't delete tasks that don't belong to you")
         }
         taskRepository.delete(task)
     }
 
     @Transactional
-    fun markTaskAsDone(taskId: Long, user: User) {
-        val task = taskRepository.findById(taskId).orElseThrow { RuntimeException("Task not found!") }
+    fun markTaskAsCompleted(taskId: Long, user: User) {
+        val task = taskRepository.findById(taskId).orElseThrow { TaskNotFoundException("Task with ID $taskId not found") }
         if (task.user != user) {
-            throw RuntimeException("You can't update tasks that don't belong to you")
+            throw UnauthorizedActionException("You can't delete tasks that don't belong to you")
         }
-        task.status = Status.DONE
+        if (task.status == Status.COMPLETED) {
+            throw TaskIsAlreadyCompletedException("Task with ID $taskId is already completed")
+        }
+        task.status = Status.COMPLETED
         taskRepository.save(task)
     }
 
@@ -81,7 +77,7 @@ class TaskService(
 
     @Transactional
     fun updateTaskAsAdmin(taskId: Long, taskDTO: TaskDTO): Task {
-        val task = taskRepository.findById(taskId).orElseThrow { RuntimeException("Task not found") }
+        val task = taskRepository.findById(taskId).orElseThrow { TaskNotFoundException("Task with ID $taskId not found") }
 
         task.title = taskDTO.title
         task.description = taskDTO.description
@@ -94,7 +90,7 @@ class TaskService(
 
     @Transactional
     fun deleteTaskById(taskId: Long) {
-        val task = taskRepository.findById(taskId).orElseThrow { RuntimeException("Task not found!") }
+        val task = taskRepository.findById(taskId).orElseThrow { TaskNotFoundException("Task with ID $taskId not found") }
         taskRepository.delete(task)
     }
 

@@ -19,7 +19,8 @@ class SecurityConfig(private val jwtFilter: JWTFilter) {
     fun securityFilterChain(http: HttpSecurity): SecurityFilterChain {
         http.csrf {it.disable()}
             .authorizeHttpRequests {
-                it.requestMatchers("/auth/**", "/swagger-ui/**", "/v3/api-docs/**").permitAll()
+                it.requestMatchers("/v3/api-docs/**", "/swagger-ui/**", "/swagger-ui.html").permitAll()
+                it.requestMatchers("/auth/**").permitAll()
                 it.requestMatchers("/tasks/**").hasAnyRole("USER", "ADMIN")
                 it.requestMatchers("/users/**").hasRole("ADMIN")
                 it.requestMatchers("/statistics/**").hasRole("ADMIN")

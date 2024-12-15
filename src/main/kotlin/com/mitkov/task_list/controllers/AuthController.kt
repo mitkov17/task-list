@@ -7,6 +7,7 @@ import com.mitkov.task_list.entities.User
 import com.mitkov.task_list.security.JWTUtil
 import com.mitkov.task_list.services.UserService
 import jakarta.validation.Valid
+import org.springframework.http.HttpStatus
 import org.springframework.http.ResponseEntity
 import org.springframework.security.authentication.AuthenticationManager
 import org.springframework.security.authentication.BadCredentialsException
@@ -33,19 +34,19 @@ class AuthController(
     }
 
     @PostMapping("/login")
-    fun performLogin(@RequestBody authenticationDTO: AuthenticationDTO): Map<String, String> {
+    fun performLogin(@RequestBody authenticationDTO: AuthenticationDTO): ResponseEntity<Map<String, String>> {
         val authInputToken = UsernamePasswordAuthenticationToken(authenticationDTO.username, authenticationDTO.password)
 
         try {
             authenticationManager.authenticate(authInputToken)
         } catch (e: BadCredentialsException) {
-            return mapOf("message" to "Incorrect credentials!")
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED)
+                .body(mapOf("message" to "Incorrect credentials!"))
         }
 
         val user = userService.findByUsername(authenticationDTO.username)
-            ?: throw RuntimeException("User not found")
 
         val token = jwtUtil.generateToken(user.username, user.role)
-        return mapOf("jwt-token" to token)
+        return ResponseEntity.ok(mapOf("jwt-token" to token))
     }
 }

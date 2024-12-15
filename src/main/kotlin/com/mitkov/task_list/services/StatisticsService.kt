@@ -1,6 +1,7 @@
 package com.mitkov.task_list.services
 
 import com.mitkov.task_list.entities.Status
+import com.mitkov.task_list.exceptions.UserNotFoundException
 import com.mitkov.task_list.repositories.TaskRepository
 import com.mitkov.task_list.repositories.UserRepository
 import jakarta.servlet.http.HttpServletResponse
@@ -17,8 +18,8 @@ class StatisticsService(
 
     fun getTaskStatistics(): Map<String, Any> {
         val totalTasks = taskService.getTotalTasksCount()
-        val completedTasks = taskService.getTasksByStatusCount(Status.DONE)
-        val unfinishedTasks = taskService.getTasksByStatusCount(Status.NOT_DONE)
+        val completedTasks = taskService.getTasksByStatusCount(Status.COMPLETED)
+        val unfinishedTasks = taskService.getTasksByStatusCount(Status.UNFINISHED)
         val userStatistics = userService.getUserTasksStatistics()
 
         return mapOf(
@@ -40,10 +41,10 @@ class StatisticsService(
                 val userStats = userService.getUserTasksStatistics()
                 userStats.forEach { (username, tasksCount) ->
                     val user = userRepository.findByUsername(username)
-                        ?: throw RuntimeException("User not found: $username")
+                        ?: throw UserNotFoundException("User with username '$username' not found")
 
-                    val completedTasks = taskRepository.countByUserAndStatus(user, Status.DONE)
-                    val unfinishedTasks = taskRepository.countByUserAndStatus(user, Status.NOT_DONE)
+                    val completedTasks = taskRepository.countByUserAndStatus(user, Status.COMPLETED)
+                    val unfinishedTasks = taskRepository.countByUserAndStatus(user, Status.UNFINISHED)
 
                     writer.write("$username;$tasksCount;$completedTasks;$unfinishedTasks\n")
                 }
